@@ -1,0 +1,16 @@
+
+# Compiled Java classes
+*.class
+
+# Maven target folder
+/target/
+
+# IDE files (VS Code)
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
