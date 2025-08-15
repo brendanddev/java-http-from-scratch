@@ -62,6 +62,50 @@ public class HttpServerTest {
     }
 
     /**
+     * Stress test for the HttpServer to simulate many clients connecting simultaneously.
+     * 
+     * This test demonstrates that the current server implementation, which handles each client sequentially,
+     * will fail under high concurrency. Without multithreading, the server cannot handle multiple simultaneous 
+     * connections, resulting in "Connection refused" errors.
+     * 
+     * @throws Exception if the server fails to start, requests cannot be sent,
+     *                   or responses cannot be read.
+     */
+    @Test
+    void stressTestMultipleClients() throws Exception {
+        // Start the server
+        HttpServer server = new HttpServer(8080);
+        server.addRoute("GET", "/", (req, body) ->
+                new HttpResponse("Hello World", 200, "OK"));
+
+        Thread serverThread = new Thread(server::start);
+        serverThread.setDaemon(true);
+        serverThread.start();
+
+        waitForServer(8080);
+
+        int clientCount = 300;
+        ExecutorService executor = Executors.newFixedThreadPool(100);
+        Callable<String> clientTask = () -> sendGetRequest("http://localhost:8080/");
+
+        long startTime = System.currentTimeMillis();
+
+        List<Future<String>> futures = executor.invokeAll(
+                java.util.Collections.nCopies(clientCount, clientTask)
+        );
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("All requests completed in " + (endTime - startTime) + " ms");
+
+        // Verify all responses
+        for (Future<String> future : futures) {
+            assertEquals("Hello World", future.get());
+        }
+
+        executor.shutdown();
+    }
+
+    /**
      * Sends a simple HTTP GET request to the given URL and returns the first line of the response.
      * 
      * @param urlStr The URL to send the GET request to.
@@ -78,6 +122,27 @@ public class HttpServerTest {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
             return in.readLine();
         }
+    }
+
+    /**
+     * Waits for the server to start listening on the given port.
+     * 
+     * It attempts to connect multiple times (50 attempts with 100ms intervals) before giving up.
+     * Its a utility to ensure that stress tests start only after the server is ready to accept connections.
+     * 
+     * @param port The port to check for server readiness.
+     * @throws InterruptedException if the thread is interrupted while waiting.
+     */
+    private void waitForServer(int port) throws InterruptedException {
+        // Try connecting 50 times
+        for (int i = 0; i < 50; i++) { 
+            try (java.net.Socket s = new java.net.Socket("localhost", port)) {
+                return; // connected successfully
+            } catch (java.io.IOException e) {
+                Thread.sleep(100); // wait 100ms before retrying
+            }
+        }
+        throw new RuntimeException("Server did not start in time");
     }
 
     
