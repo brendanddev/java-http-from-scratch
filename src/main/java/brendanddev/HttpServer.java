@@ -94,25 +94,6 @@ public class HttpServer {
 
 
     /**
-     * Determines the appropriate HTTP response based on the request path.
-     * Acts as a simple router to return different HTML content and status codes for different paths.
-     * 
-     * @param request The parsed HTTP request containing the method, path, and headers.
-     * @return A HttpResponse object containing the HTML content, HTTP status code, and status text.
-     */
-    private HttpResponse getResponse(HttpRequest request) {
-        switch (request.getPath()) {
-            case "/":
-                return new HttpResponse("<html><body><h1>Home</h1></body></html>", 200, "OK");
-            case "/about":
-                return new HttpResponse("<html><body><h1>About Us</h1></body></html>", 200, "OK");
-            default:
-                return new HttpResponse("<html><body><h1>404 Not Found</h1></body></html>", 404, "Not Found");
-        }
-    }
-
-
-    /**
      * Parses the HTTP request from the input stream and constructs an HttpRequest object.
      * 
      * @param in The BufferedReader connected to the client socket.
