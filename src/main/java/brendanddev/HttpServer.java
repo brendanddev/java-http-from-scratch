@@ -71,21 +71,26 @@ public class HttpServer {
             HttpRequest request = parseRequest(in);
             System.out.println("Received request: " + request);
 
-            // Read body for POST/PUT requests if content-length is set
+            // Read body for POST/PUT requests if content-length header is set
             int contentLength = 0;
             String contentLengthHeader = request.getHeaders().get("Content-Length");
             if (contentLengthHeader != null) {
                 contentLength = Integer.parseInt(contentLengthHeader);
             }
+
+            // Prepare char array to store the request body
             char[] bodyChars = new char[contentLength];
             if (contentLength > 0) {
+                // Read body from the input stream
                 in.read(bodyChars, 0, contentLength);
             }
+            // Convert char array to String
             String body = new String(bodyChars);
 
-            // Lookup for route handler
+            // Lookup the registered route handler for this HTTP method and path
             HttpHandler handler = routes.get(request.getMethod().toUpperCase() + " " + request.getPath());
             HttpResponse response;
+            
             if (handler != null) {
                 // If a handler exists for the request, use it to generate a response
                 response = handler.handle(request, body);
