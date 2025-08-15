@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple HTTP server implemented from scratch in Java.
@@ -47,14 +49,14 @@ public class HttpServer {
      */
     private void handleClient(Socket socket) {
         try (
-            // Reader for reading incoming HTTP requests
-            // Write for sending HTTP responses
+            // Reader for reading incoming HTTP requests from the client
+            // Writer for sending HTTP responses to the client
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream());
         ) {
-            // Read the request line
-            String requestLine = in.readLine();
-            System.out.println("Received request: " + requestLine);
+            // Parse incoming HTTP request into an HttpRequest object
+            HttpRequest request = parseRequest(in);
+            System.out.println("Received request: " + request);
 
             // Response to send to the client
             String response = "<html><body><h1>Hello, World!</h1></body></html>";
@@ -75,12 +77,43 @@ public class HttpServer {
         }
     }
 
+    /**
+     * Parses the HTTP request from the input stream and constructs an HttpRequest object.
+     * 
+     * @param in The BufferedReader connected to the client socket.
+     * @return HttpRequest object containing the parsed request data.
+     * @throws Exception If an error occurs while reading the request.
+     */
+    private HttpRequest parseRequest(BufferedReader in) throws Exception {
+
+        // Reads the request line from the input stream
+        String requestLine = in.readLine();
+
+        // Splits the request line into parts
+        String[] requestParts = requestLine.split(" ");
+        String method = requestParts[0];
+        String path = requestParts[1];
+        String httpVersion = requestParts[2];
+
+        // Read headers until a blank line is encountered
+        Map<String, String> headers = new HashMap<>();
+        String line;
+        while (!(line = in.readLine()).isEmpty()) {
+            int colonIndex = line.indexOf(":");
+            headers.put(line.substring(0, colonIndex).trim(),
+                    line.substring(colonIndex + 1).trim());
+        }
+
+        // Return a fully populated HttpRequest object
+        return new HttpRequest(method, path, httpVersion, headers);
+    }
 
 
 
 
 
 
-    
+
+
     
 }
