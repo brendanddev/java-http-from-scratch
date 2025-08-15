@@ -59,14 +59,14 @@ public class HttpServer {
             System.out.println("Received request: " + request);
 
             // Determine response to send based on the path
-            String response = getResponse(request);
+            HttpResponse response = getResponse(request);
             
             // Sends the HTTP response back to the client
-            out.println("HTTP/1.1 200 OK");
+            out.println("HTTP/1.1 " + response.statusCode + " " + response.statusText);
             out.println("Content-Type: text/html");
-            out.println("Content-Length: " + response.length());
+            out.println("Content-Length: " + response.body.length());
             out.println();
-            out.println(response);
+            out.println(response.body);
             
             // Flush the output stream to send the response
             // Then close socket to end the connection
@@ -82,19 +82,19 @@ public class HttpServer {
 
     /**
      * Determines the appropriate HTTP response based on the request path.
-     * Acts as a simple router to return different content for different paths.
+     * Acts as a simple router to return different HTML content and status codes for different paths.
      * 
-     * @param request The parsed HTTP request.
-     * @return A string containing the HTML response content.
+     * @param request The parsed HTTP request containing the method, path, and headers.
+     * @return A HttpResponse object containing the HTML content, HTTP status code, and status text.
      */
-    private String getResponse(HttpRequest request) {
-        switch(request.getPath()) {
+    private HttpResponse getResponse(HttpRequest request) {
+        switch (request.getPath()) {
             case "/":
-                return "<html><body><h1>Home</h1></body></html>";
+                return new HttpResponse("<html><body><h1>Home</h1></body></html>", 200, "OK");
             case "/about":
-                return "<html><body><h1>About Us</h1></body></html>";
+                return new HttpResponse("<html><body><h1>About Us</h1></body></html>", 200, "OK");
             default:
-                return "<html><body><h1>404 Not Found</h1></body></html>";
+                return new HttpResponse("<html><body><h1>404 Not Found</h1></body></html>", 404, "Not Found");
         }
     }
 
