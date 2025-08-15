@@ -58,8 +58,10 @@ public class HttpServer {
             HttpRequest request = parseRequest(in);
             System.out.println("Received request: " + request);
 
-            // Response to send to the client
-            String response = "<html><body><h1>Hello, World!</h1></body></html>";
+            // Determine response to send based on the path
+            String response = getResponse(request);
+            
+            // Sends the HTTP response back to the client
             out.println("HTTP/1.1 200 OK");
             out.println("Content-Type: text/html");
             out.println("Content-Length: " + response.length());
@@ -76,6 +78,26 @@ public class HttpServer {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * Determines the appropriate HTTP response based on the request path.
+     * Acts as a simple router to return different content for different paths.
+     * 
+     * @param request The parsed HTTP request.
+     * @return A string containing the HTML response content.
+     */
+    private String getResponse(HttpRequest request) {
+        switch(request.getPath()) {
+            case "/":
+                return "<html><body><h1>Home</h1></body></html>";
+            case "/about":
+                return "<html><body><h1>About Us</h1></body></html>";
+            default:
+                return "<html><body><h1>404 Not Found</h1></body></html>";
+        }
+    }
+
 
     /**
      * Parses the HTTP request from the input stream and constructs an HttpRequest object.
