@@ -14,13 +14,17 @@ public class Main {
         HttpServer server = new HttpServer(8080);
 
         // GET route
-        server.addRoute("GET", "/", (requestm, body) ->
-            new HttpResponse("<h1>Welcome to the Home Page!</h1>", 200, "OK")
+        server.addRoute("GET", "/", (request, body) ->
+            new HttpResponse(ServerUtils.loadTemplate("index.html"), 200, "OK")
         );
 
+        server.addRoute("GET", "/about", (req, body) ->
+            new HttpResponse(ServerUtils.loadTemplate("about.html"), 200, "OK")
+        );
+       
         // POST route
-        server.addRoute("POST", "/submit", (request, body) -> 
-            new HttpResponse("<h1>Received POST: " + body + "</h1>", 200, "OK")        
+        server.addRoute("POST", "/submit", (req, body) ->
+            new HttpResponse(ServerUtils.loadTemplate("submit.html").replace("{{message}}", body), 200, "OK")
         );
 
         // Start server
