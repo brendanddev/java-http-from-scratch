@@ -17,6 +17,8 @@ import java.util.Map;
 public class HttpServer {
 
     private int port;
+    private final Map<String, HttpHandler> routes = new HashMap<>();
+    
 
     // Constructs an HttpServer that listens on the specified port
     public HttpServer(int port) {
@@ -39,6 +41,17 @@ public class HttpServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Adds a route to the server with a specific HTTP method and path.
+     * 
+     * @param method The HTTP method.
+     * @param path The route path.
+     * @param handler The HttpHandler to handle requests to this route.
+     */
+    public void addRoute(String method, String path, HttpHandler handler) {
+        routes.put(method.toUpperCase() + " " + path, handler);
     }
 
 
