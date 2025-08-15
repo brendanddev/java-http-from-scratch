@@ -39,6 +39,7 @@ public class HttpServer {
         }
     }
 
+
     /**
      * Handles a single client connection by reading the HTTP request and sending a simple HTTP response.
      * 
@@ -74,5 +75,12 @@ public class HttpServer {
         }
     }
 
+
+
+
+
+
+
+    
     
 }
