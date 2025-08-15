@@ -71,8 +71,28 @@ public class HttpServer {
             HttpRequest request = parseRequest(in);
             System.out.println("Received request: " + request);
 
-            // Determine response to send based on the path
-            HttpResponse response = getResponse(request);
+            // Read body for POST/PUT requests if content-length is set
+            int contentLength = 0;
+            String contentLengthHeader = request.getHeaders().get("Content-Length");
+            if (contentLengthHeader != null) {
+                contentLength = Integer.parseInt(contentLengthHeader);
+            }
+            char[] bodyChars = new char[contentLength];
+            if (contentLength > 0) {
+                in.read(bodyChars, 0, contentLength);
+            }
+            String body = new String(bodyChars);
+
+            // Lookup for route handler
+            HttpHandler handler = routes.get(request.getMethod().toUpperCase() + " " + request.getPath());
+            HttpResponse response;
+            if (handler != null) {
+                // If a handler exists for the request, use it to generate a response
+                response = handler.handle(request, body);
+            } else {
+                // If no handler found, return 404 Not Found
+                response = new HttpResponse("<h1>404 Not Found</h1>", 404, "Not Found");
+            }
             
             // Sends the HTTP response back to the client
             out.println("HTTP/1.1 " + response.statusCode + " " + response.statusText);
