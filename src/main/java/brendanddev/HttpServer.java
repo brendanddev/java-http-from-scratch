@@ -6,9 +6,18 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * A simple HTTP server implemented from scratch in Java.
+ * 
+ * The server listens on a configurable TCP port defaulting to 8080,
+ * accepts incoming HTTP requests, and responds with a basic HTML page.
+ */
 public class HttpServer {
 
-
+    /**
+     * Main entry point to start the HTTP server.
+     * @param args Unused.
+     */
     public static void main(String[] args) {
         try {
 
@@ -17,11 +26,17 @@ public class HttpServer {
             ServerSocket serverSocket = new ServerSocket(8080);
             System.out.println("Server is listening on port 8080");
 
+            // Loop to keep server running
             while (true) {
+                // Accept incoming client connection
                 Socket socket = serverSocket.accept();
+
+                // Reader for incoming HTTP request
+                // Writer for sending HTTP response
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream());
 
+                // Reads first line of the HTTP request
                 String requestLine = in.readLine();
                 System.out.println("Received request: " + requestLine);
 
