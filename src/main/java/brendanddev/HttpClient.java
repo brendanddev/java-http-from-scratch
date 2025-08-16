@@ -33,10 +33,10 @@ public class HttpClient {
      * @return The raw HTTP response from the server.
      * @throws Exception If an I/O error occurs during the request.
      */
-    public String get(String path) throws Exception {
+    public String getRaw(String path) throws Exception {
         // Establishes a socket connection to the server
         try (Socket socket = new Socket(host, port)) {
-            // 
+            // Sets up input and output streams for communication with the server
             PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -55,6 +55,25 @@ public class HttpClient {
             }
             return response.toString();
         }
+    }
+
+    /**
+     * Sends a GET request and returns only the response body, excluding headers.
+     * 
+     * @param path The path on the server to which the GET request is sent.
+     * @return The body of the HTTP response from the server.
+     * @throws Exception If an I/O error occurs during the request.
+     */
+    public String get(String path) throws Exception {
+        String rawResponse = getRaw(path);
+
+        // Split response into headers and body
+        int seperatorIndex = rawResponse.indexOf("\r\n\r\n");
+        if (seperatorIndex == -1) {
+            throw new RuntimeException("Invalid HTTP response: No header-body separator found.");
+        }
+        // Return everything after blank like (body)
+        return rawResponse.substring(seperatorIndex + 4);
     }
     
 }
