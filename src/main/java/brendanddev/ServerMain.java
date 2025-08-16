@@ -3,7 +3,7 @@ package brendanddev;
 /**
  * The main entry point for the HTTP server application.
  */
-public class Main {
+public class ServerMain {
 
 
     /**
