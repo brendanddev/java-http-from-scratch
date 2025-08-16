@@ -2,6 +2,7 @@ package brendanddev.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -101,17 +102,23 @@ public class HttpServer {
                 response = new HttpResponse("<h1>404 Not Found</h1>", 404, "Not Found");
             }
             
-            // Sends the HTTP response back to the client
+            // Convert body to bytes
+            byte[] bodyBytes = response.body.getBytes("UTF-8");
+
+
+            // Send headers with CRLF
             out.print("HTTP/1.1 " + response.statusCode + " " + response.statusText + "\r\n");
-            out.print("Content-Type: text/html\r\n");
-            out.print("Content-Length: " + response.body.length() + "\r\n");
+            out.print("Content-Type: text/html; charset=UTF-8\r\n");
+            out.print("Content-Length: " + bodyBytes.length + "\r\n");
             out.print("\r\n");
-            out.print(response.body);
             out.flush();
-            
-            // Flush the output stream to send the response
-            // Then close socket to end the connection
-            out.flush();
+
+            // Send body
+            OutputStream os = socket.getOutputStream();
+            os.write(bodyBytes);
+            os.flush();
+
+            // Close connection
             socket.close();
             System.out.println("Response sent to client.");
 
