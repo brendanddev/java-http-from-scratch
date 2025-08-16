@@ -5,7 +5,6 @@ package brendanddev.server;
  */
 public class MainServer {
 
-
     /**
      * Main method to start the HTTP server
      * @param args Unused.

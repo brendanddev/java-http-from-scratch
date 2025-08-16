@@ -1,5 +1,7 @@
 package brendanddev.server;
 
+import brendanddev.model.HttpRequest;
+
 /**
  * Functional interface representing a handler for processing HTTP requests.
  * 

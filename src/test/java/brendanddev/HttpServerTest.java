@@ -1,6 +1,10 @@
 package brendanddev;
 
 import org.junit.jupiter.api.Test;
+
+import brendanddev.server.HttpResponse;
+import brendanddev.server.HttpServer;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;

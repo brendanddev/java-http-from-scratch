@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import brendanddev.model.HttpRequest;
+
 /**
  * A simple HTTP server implemented from scratch in Java.
  * 
@@ -100,11 +102,12 @@ public class HttpServer {
             }
             
             // Sends the HTTP response back to the client
-            out.println("HTTP/1.1 " + response.statusCode + " " + response.statusText);
-            out.println("Content-Type: text/html");
-            out.println("Content-Length: " + response.body.length());
-            out.println();
-            out.println(response.body);
+            out.print("HTTP/1.1 " + response.statusCode + " " + response.statusText + "\r\n");
+            out.print("Content-Type: text/html\r\n");
+            out.print("Content-Length: " + response.body.length() + "\r\n");
+            out.print("\r\n");
+            out.print(response.body);
+            out.flush();
             
             // Flush the output stream to send the response
             // Then close socket to end the connection
