@@ -18,7 +18,7 @@ public class MainClient {
             }
 
             String host = props.getProperty("server.host", "localhost");
-            int port = Integer.parseInt(props.getProperty("server.port", "8080"));
+            int port = Integer.parseInt(props.getProperty("server.port", "9080"));
 
             // Create instance of HttpClient with the loaded properties
             HttpClient client = new HttpClient(host, port);
