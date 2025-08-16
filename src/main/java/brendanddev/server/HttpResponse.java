@@ -1,4 +1,4 @@
-package brendanddev;
+package brendanddev.server;
 
 /**
  * Represents an HTTP response, including the response body, status code, and status text.

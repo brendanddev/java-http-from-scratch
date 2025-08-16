@@ -1,4 +1,4 @@
-package brendanddev;
+package brendanddev.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package brendanddev;
+package brendanddev.server;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;

@@ -1,9 +1,9 @@
-package brendanddev;
+package brendanddev.server;
 
 /**
  * The main entry point for the HTTP server application.
  */
-public class ServerMain {
+public class MainServer {
 
 
     /**

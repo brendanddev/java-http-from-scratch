@@ -1,4 +1,4 @@
-package brendanddev;
+package brendanddev.server;
 
 /**
  * Functional interface representing a handler for processing HTTP requests.
